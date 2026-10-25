@@ -27,8 +27,54 @@ The repository provides two clearly separated execution paths:
    condition-specific heads, compared with the same observations.
 
 These are research protocols. Their outputs must be evaluated on the declared
-data and split; the defaults are not a reconstruction of undocumented historical
-manuscript runs.
+data and split. The additional experiments examine improvement opportunities
+in the current data. Original-parent relationships between training and
+evaluation data are recorded; evaluation on new independent specimens remains
+a follow-up task.
+
+## Development Results
+
+The original idea is retained: PHI enters the RUL experts, and an observed-signal
+similarity gate combines their outputs. The first improvement keeps the existing
+Bi-LSTM experts fixed and changes the gate. Applying the same improved gate to
+Transformer experts is an additional comparison, not a decision to replace the
+manuscript's main model.
+
+### Existing Experts and Gate Improvement
+
+| Three-expert configuration | MAE (cycles) | RMSE (cycles) |
+|:---|---:|---:|
+| Bi-LSTM + PHI + original STFT soft | 16,436 | 21,960 |
+| Same Bi-LSTM experts + improved similarity gate | 9,301 | 11,308 |
+| Transformer + PHI + same improved gate | 8,223 | 10,210 |
+
+These are three-seed means (42, 43, 44), each evaluated at the same 45 observations
+(15 files at 70%, 80%, 90%). PHI remains an expert input in every row. The improved
+gate uses resistance-based DC amplitude/trend features, not PHI as a gate input.
+Its main information is equivalent to a Hann-weighted moving mean. The archived
+regressors in this stage were selected using the earlier val procedure; their
+capacity and training are not a fully matched backbone comparison.
+
+### Separate Transformer Retraining
+
+The next stage selects epochs within training groups and refits the selected
+training schedule. Its 30-draw MC means, averaged over three seeds, are:
+
+| Configuration | MAE (cycles) | RMSE (cycles) |
+|:---|---:|---:|
+| Pooled Transformer | 10,521 | 12,795 |
+| Shared encoder with three expert heads + STFT soft | 9,838 | 12,213 |
+| Shared soft + pooled prediction, fixed 50:50 | 9,430 | 11,314 |
+
+This is a separate training/selection and inference protocol. Do not rank 8,223
+and 9,430 as if only the architecture changed. The supplied results examine
+improvement possibilities in the current development data; independent specimen
+evaluation remains a follow-up task.
+
+See the [Korean experiment summary](docs/development_results_ko.md),
+[aggregate results and controls](examples/development_results.csv), and
+[actual Transformer settings record](examples/development_transformer_config.json).
+The JSON records settings; the entrypoint takes CLI flags, not `--config`.
 
 ## Method
 
@@ -84,7 +130,7 @@ reliability-aware-rul-revision/
 │   ├── revision_data.py      # Explicit manifest and train-only scaling
 │   └── metrics.py
 ├── examples/sample_manifest.csv
-├── tools/                    # Replay and controlled comparisons
+├── tools/                    # Replay, frozen-component audits and comparisons
 ├── tests/
 ├── docs/
 ├── train.py                  # Repaired Bi-LSTM execution path
@@ -176,6 +222,21 @@ the measured column, gate groups are split before scaling, best checkpoints
 are restored, and PHI uses an initial baseline by default. See the protocol for
 the explicit historical full-trajectory-minimum calculator option.
 
+`train.py` contains the repaired Bi-LSTM training path. The 9,301 result above
+was obtained by reweighting archived experts in a separate follow-up experiment;
+it is not a promised output of the default `python train.py` command. Both
+backbones can use the resistance-only `STFTRateGate` after training, without
+changing their PHI inputs. Export exact component outputs and weights to audit
+that combination:
+
+```bash
+python tools/recompute_frozen_results.py --predictions /path/frozen_components.csv --output results/frozen_audit
+```
+
+The [input schema and interpretation](docs/development_results_ko.md#저장된-전문가-출력의-재계산)
+distinguish a frozen-component audit from fitting a gate or retraining a model.
+This deterministic tool does not replay MC uncertainty from component means.
+
 ## Model and Training Controls
 
 | Setting | Revision workflow |
@@ -222,6 +283,7 @@ unscaled NASA challenge total. Perfect predictions score zero.
 
 ## Documentation
 
+- [Bi-LSTM improvements and additional Transformer experiments (Korean)](docs/development_results_ko.md)
 - [Revision protocol and definitions](docs/revision_protocol.md)
 - [Changes from the original repository](docs/changes.md)
 - [Calibration, noise and manuscript-question definitions](docs/revision_questions.md)

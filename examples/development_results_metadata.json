@@ -1,0 +1,46 @@
+{
+  "updated": "2026-10-26",
+  "metric_units": "cycles",
+  "aggregation": "arithmetic mean of seed-level MAE and RMSE; sample SD across seeds",
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "evaluation_files": 15,
+  "fractions": [
+    0.7,
+    0.8,
+    0.9
+  ],
+  "observations_per_seed": 45,
+  "shared_parent_groups_between_train_and_evaluation": true,
+  "intended_scope": "additional development experiments; independent specimen evaluation is a follow-up task",
+  "protocol_A_gate": "rate_dc_R__rbf1, soft power=1; prior val-selected frozen regressors",
+  "protocol_B_code_commit": "a2d28d3c384ca5c225342de07c50ab5707f20c05",
+  "source_summaries": [
+    {
+      "filename": "comparison_summary.csv",
+      "sha256": "6eb80808240980c4f6159890dcd7205e188f72d251f5e6c3c4881e587eb03ae7"
+    },
+    {
+      "filename": "rates_frozen_expert_summary.csv",
+      "sha256": "7d2c45753e0ae4cf82e1dad38fe7768228cfeb1650a28a348cea6025b16bbd04"
+    },
+    {
+      "filename": "summary.csv",
+      "sha256": "236cbb3df19b8fe6ada8f31e7a394529e500e50c55ebaf980380412f70d2b886"
+    }
+  ],
+  "public_full_data": false,
+  "public_checkpoints": false,
+  "new_training_performed_for_this_update": false,
+  "verification": {
+    "unit_tests_passed": 19,
+    "frozen_component_rows": 540,
+    "recomputed_aggregate_rows": 4,
+    "maximum_metric_difference_cycles": 0.00037359232374001294,
+    "maximum_stored_prediction_difference_cycles": 0.003718124658917077,
+    "private_audit_inputs_published": false
+  }
+}

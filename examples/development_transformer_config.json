@@ -1,0 +1,112 @@
+{
+  "entrypoint": "train_revision.py",
+  "code_commit": "a2d28d3c384ca5c225342de07c50ab5707f20c05",
+  "data": {
+    "train_files": 135,
+    "evaluation_files": 15,
+    "columns": [
+      "cumulative_contact",
+      "res",
+      "force",
+      "RUL"
+    ],
+    "training_conditions": [
+      "0A",
+      "0.5A",
+      "1.0A"
+    ],
+    "evaluation_folder_labels": [
+      "0.3A",
+      "0.7A",
+      "0.9A"
+    ],
+    "evaluation_scope": "development",
+    "parent_group_overlap": true
+  },
+  "cli": {
+    "models": "all",
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "epochs": 50,
+    "patience": 12,
+    "batch_size": 128,
+    "fractions": [
+      0.7,
+      0.8,
+      0.9
+    ],
+    "alpha": 2.34,
+    "beta": 0.133,
+    "no_phi": false,
+    "mc_samples": 30,
+    "gate_bins": "dc",
+    "fixed_gate": false,
+    "allow_development_overlap": true
+  },
+  "network": {
+    "type": "Transformer",
+    "width": 128,
+    "layers": 3,
+    "attention_heads": 4,
+    "feedforward": 256,
+    "dropout": 0.1,
+    "window_rows": 200,
+    "training_stride_rows": 100,
+    "training_start_fraction": 0.6
+  },
+  "inputs": [
+    "PHI",
+    "res",
+    "force",
+    "relative_res",
+    "observed_cycle/380000"
+  ],
+  "preprocessing": {
+    "PHI_baseline_rows": 100,
+    "PHI_scale": 30,
+    "relative_res_baseline_rows": 100,
+    "standardization_fit_on": "train"
+  },
+  "optimization": {
+    "optimizer": "AdamW",
+    "learning_rate": 0.0005,
+    "weight_decay": 0.0001,
+    "loss": "Huber",
+    "huber_delta": 0.5,
+    "target_scale": 100000,
+    "gradient_clip_norm": 1,
+    "scheduler": "ReduceLROnPlateau",
+    "scheduler_patience": 7,
+    "scheduler_factor": 0.5
+  },
+  "selection": {
+    "epoch_metric": "internal_group_RMSE",
+    "held_out_groups_per_condition": 1,
+    "refit_all_train": true,
+    "replay_selected_LR_schedule": true,
+    "gate_selection": "train_group_CV",
+    "evaluation_used_for_setting_selection": false
+  },
+  "gate": {
+    "STFT_segment_rows": 256,
+    "overlap_rows": 128,
+    "window": "Hann",
+    "bins": [
+      0
+    ],
+    "boundary_extension": false,
+    "padding": false,
+    "soft_power": 1,
+    "classifier": "SVM",
+    "C": 10.0
+  },
+  "prediction": {
+    "MC_seed_offset": 100000,
+    "sigma_calibrated": false,
+    "fixed_pooled_blend_fraction": 0.5
+  },
+  "description": "Actual protocol B settings record. train_revision.py uses CLI flags; no --config option. Protocol A is a separate frozen-expert experiment."
+}

@@ -27,10 +27,25 @@ The original repository is not changed by this publication.
 ## Public contents and validation
 
 The 18 sample CSV files and two illustrations are byte-identical to the
-already-public source. Full private measurement sets, checkpoints, local reports,
-credentials and development result folders are not included.
+already-public source. Full private measurement sets, checkpoints, credentials
+and development result folders are not included. Aggregate development metrics
+and an execution-settings record are published separately in `examples/`.
 
 The core revision code passed 13 unit tests, an 18-CSV smoke run and saved
 checkpoint replay during development. The two-epoch sample command checks code
 execution only; it does not reproduce manuscript performance. No final journal
 publication status or historical numeric claims are asserted by this repository.
+
+## October 26 report alignment
+
+- Put the Bi-LSTM gate improvement before the additional Transformer studies.
+- Keep the frozen-expert stage (9,301 / 8,223) separate from the later internally
+  selected/refitted Transformer stage (10,521 / 9,838 / 9,430).
+- State that PHI remains an expert input and DC features produce gate weights.
+- Add aggregate controls, the actual Transformer settings record and a Korean
+  explanation of results, execution paths and remaining independent evaluation.
+- Add a deterministic frozen-component audit that rejects mismatched identities,
+  changed expert outputs and invalid weights; it does not retrain a gate/model.
+- All 19 tests passed. The new tool audited 540 archived observation/component
+  rows and recovered the four reported soft-gate aggregates within 0.001 cycle;
+  small differences in the original Bi-LSTM baseline reflect float32 exports.
